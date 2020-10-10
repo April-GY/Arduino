@@ -1,0 +1,71 @@
+int beeppin = 11;  // 蜂鸣器的pin
+int Tr = 2; //传感器TR端
+int Ec = 3; //传感器Ec端
+int Led = 5;
+int i = 0;
+float a = 0;
+float checkdistance_1_2() {
+  digitalWrite(Tr, LOW);
+  delayMicroseconds(2);
+  digitalWrite(Tr, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(Tr, LOW);
+  float distance = pulseIn(Ec, HIGH) / 58.30;
+  delay(20);
+  return distance;
+}
+void setup(){
+  Serial.begin(9600);
+  pinMode(Led,OUTPUT);
+  pinMode(Tr, OUTPUT);
+  pinMode(Ec, INPUT);
+  pinMode(beeppin,OUTPUT);   
+}
+
+void loop(){
+  a = checkdistance_1_2();
+  Serial.println(a);
+  if(a<20)
+  {
+    buzzer1();
+  }
+  else if (a<=100)
+  {
+    buzzer2();
+  }
+  else
+  {
+    buzzer3();
+  }
+}
+
+void buzzer1()
+{
+  tone(beeppin,988);
+  digitalWrite(Led,HIGH);
+  delay(a*13);  //响声间隔
+  digitalWrite(Led,LOW);
+  noTone(beeppin);
+  delay(a*13);
+}
+
+void buzzer2()
+{
+  tone(beeppin,988);
+  digitalWrite(Led,HIGH);
+  delay(500);  //响声间隔500ms 听上去普通
+  digitalWrite(Led,LOW);
+  noTone(beeppin);
+  delay(500);
+}
+
+void buzzer3()  
+{
+  if(i%100 == 1){
+    tone(beeppin,500);
+  }
+  else{
+    noTone(beeppin);
+  }
+  i++;
+}
